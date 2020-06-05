@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta http-equiv="Access-Control-Allow-Origin" content="*" charset="utf-8">
+	
+		<title>用户管理</title>
+		<script type="text/javascript" src="../static/js/axios.min.js"></script>
+		<script type="text/javascript" src="../static/js/jquery.min.js"></script>
+		<script type="text/javascript" src="../static/js/vue.min.js"></script>
+		<style type="text/css">
+			.t{
+				border: #808080;
+				border-collapse: collapse;
+			}
+			td{
+				width: auto;
+				padding-left: 3px;
+			}
+			a{
+				text-decoration: none;
+			}
+			div#page_area{
+				text-align: center;
+				padding: 0.25rem,0.25rem;
+			}
+		</style>
+		<script type="text/javascript">
+			$("a.pageClass").click(function(event){
+				return false;
+			})
+		</script>
+	</head>
+	<body>
+	<div id="showingPage">
+		<table align="center" class="t" border="1">
+			<tr>
+				<td colspan="5">
+					<div id="page_area">
+					<!-- <a v-bind:class="{pageClass:pageInfo.hasPreviousPage}"></a> -->
+					<a :class="{pageClass: pageInfo.pageNum==1}" @click="jump('first')" href="#nowhere">[first]</a>
+					<a :class="{pageClass: !pageInfo.hasPreviousPage}" @click="jump('pre')" href="#nowhere">[previous]</a>
+					<a :class="{pageClass: pageInfo.pageNum==i}" v-for="i in pageInfo.navigatepageNums" @click="jumpByPageNum(i)" href="#nowhere">{{i}}</a>
+					<a :class="{pageClass: !pageInfo.hasNextPage}" @click="jump('next')" href="#nowhere">[next]</a>
+					<a :class="{pageClass: pageInfo.pageNum==pageInfo.pages}" @click="jump('last')" href="#nowhere">[last]</a>
+					</div>								
+				</td>
+			</tr>
+			<tr>
+				<td>序号</td>
+				<td>id</td>
+				<td>name</td>
+				<td>password</td>
+				<td>salt</td>
+			</tr>
+			<tr v-for="user,index in users">
+				<td>{{index}}</td>
+				<td>{{user.id}}</td>
+				<td>{{user.name}}</td>
+				<td>{{user.password}}</td>
+				<td>{{user.salt}}</td>
+			</tr>
+		</table>
+	</div>
+	<script>
+		var vue=new Vue({
+			el:"#showingPage",
+			data:{
+				users:[],
+				addUser:{id:0,name:'',password:''},
+				pageInfo:{}
+				
+			},
+			mounted() {
+				//pageHelper进行分页是基1操作，也就是说首页是从第一页开始
+				this.list(1,5);
+				
+			},
+			methods:{
+				list:function(start){
+					var that=this;
+					//整个web前端中的路径，都是以后端接口所在的位置为基准的，
+					//因此要访问另外一个接口中的数据，只需要把接口对应的路径写全即可
+					var url="/user/listUsers?start="+start;
+					axios.defaults.withCredentials = true;
+					axios.get(url).then(function(response){
+						
+						that.pageInfo=response.data;
+						that.users=response.data.list;
+					})
+				},
+				jump:function(page){
+					if('first'== page && 1!=vue.pageInfo.pageNum)
+						vue.list(1);
+					
+					else if('pre'== page &&	vue.pageInfo.hasPreviousPage )
+						vue.list(vue.pageInfo.prePage);
+					
+					else if('next'== page && vue.pageInfo.hasNextPage)
+						vue.list(vue.pageInfo.nextPage);					
+					
+					else if('last'== page && vue.pageInfo.pageNum!=vue.pageInfo.pages)
+						vue.list(vue.pageInfo.pages);
+					
+				},
+				jumpByPageNum:function(i){
+					if(vue.pageInfo.pageNum!=i){
+						vue.list(i);
+					}
+					
+				}
+			}
+		})
+	</script>
+	</body>	
+</html>

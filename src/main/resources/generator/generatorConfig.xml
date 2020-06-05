@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+
+<generatorConfiguration>
+    <!--数据库驱动jar -->
+    <!--
+        如果IDE(eclipse或者idea) 项目里导入了jar包，那么就不需要配置了jar包的绝对路径了
+         <classPathEntry    location="e:/project/mybatis/lib/mysql-connector-java-5.0.8-bin.jar"/>
+    -->
+    <classPathEntry
+            location="D:\Maven\repository\mysql\mysql-connector-java\5.1.32\mysql-connector-java-5.1.32.jar" />
+
+    <context id="Tables" targetRuntime="MyBatis3">
+        <!--去除注释 -->
+        <commentGenerator>
+            <property name="suppressAllComments" value="true" />
+        </commentGenerator>
+
+        <!--数据库连接 -->
+        <jdbcConnection driverClass="com.mysql.jdbc.Driver"
+                        connectionURL="jdbc:mysql://localhost:3306/cart"
+                        userId="root"
+                        password="12345">
+        </jdbcConnection>
+        <!--默认false 把JDBC DECIMAL 和 NUMERIC 类型解析为 Integer，为 true时把JDBC DECIMAL 和
+         NUMERIC 类型解析为java.math.BigDecimal  -->
+        <javaTypeResolver>
+            <property name="forceBigDecimals" value="false" />
+        </javaTypeResolver>
+
+        <!--生成实体类 指定包名 以及生成的地址  -->
+        <javaModelGenerator targetPackage="com.myweb.myshiro.model"
+                            targetProject="D:\shiro-learning\myshiro\src\main\java">
+            <!-- enableSubPackages:是否让schema作为包的后缀 -->
+            <property name="enableSubPackages" value="true" />
+            <!-- 从数据库返回的值被清理前后的空格 -->
+            <property name="trimStrings" value="true" />
+        </javaModelGenerator>
+
+        <!--生成mapper的XML映射文件 -->
+        <sqlMapGenerator targetPackage="mapper"
+                         targetProject="D:\shiro-learning\myshiro\src\main\resources">
+            <!-- enableSubPackages:是否让schema作为包的后缀 -->
+            <property name="enableSubPackages" value="false" />
+        </sqlMapGenerator>
+
+        <!--生成Dao文件 可以配置 type="XMLMAPPER"生成xml的dao实现 context id="DB2Tables" 修改targetRuntime="MyBatis3" -->
+        <javaClientGenerator type="XMLMAPPER"
+                             targetPackage="com.myweb.myshiro.dao"
+                             targetProject="D:\shiro-learning\myshiro\src\main\java">
+            <!-- enableSubPackages:是否让schema作为包的后缀 -->
+            <property name="enableSubPackages" value="false" />
+        </javaClientGenerator>
+
+        <!--指定数据库表 mysql可以加入主键自增 字段命名 忽略某字段等 -->
+        <!--        domainObjectName是实体类名-->
+        <table schema="" tableName="product">
+            <!--   使用自增长主键         -->
+            <property name="my.isgen.usekeys" value="true"/>
+            <generatedKey column="id" sqlStatement="JDBC"/>
+        </table>
+        <table schema="" tableName="item" >
+            <property name="my.isgen.usekeys" value="true"/>
+            <generatedKey column="id" sqlStatement="JDBC"/>
+        </table>
+        <table schema="" tableName="order_" >
+            <property name="my.isgen.usekeys" value="true"/>
+            <generatedKey column="id" sqlStatement="JDBC"/>
+        </table>
+    </context>
+</generatorConfiguration>

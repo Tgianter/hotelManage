@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		<script type="application/javascript" src="../static/js/axios.min.js"></script>
+		<script type="application/javascript" src="../static/js/jquery.min.js"></script>
+		<script type="application/javascript" src="../static/js/vue.min.js"></script>		
+		
+		<title>权限管理</title>
+	</head>
+	<body>
+		<div id="permission_page" align="center">
+			<table class="t" border="1" cellspacing="0">
+				<thead>
+					<th colspan="2">
+						{{currentPage}}/{{totalPage}}
+					</th>
+				</thead>
+				<thead>
+					<th>id</th>
+					<th>name</th>				
+				</thead>
+				<tbody v-for="p in permissions">
+					<td>{{p.id}}</td>
+					<td>{{p.name}}</td>
+				</tbody>
+				<tr>
+					<td colspan="2">
+						<div id="jump_area">
+							<button type="button" @click="jump('first')">首页</button>
+							<button type="button" @click="jump('pre')">上一页</button>
+							<button type="button" @click="jump('next')">下一页</button>
+							<button type="button" @click="jump('tail')">尾页</button>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<script>
+			var vue=new Vue({
+				el:"#permission_page",
+				data:{
+					permissions:[],
+					permission:{id:'',name:''},
+					pageInfo:{},
+					totalPage: 0,
+					currentPage:1
+				},
+				mounted() {
+					//vue中定义的方法只能通过this进行使用，
+					//不能通过vue.方法名 来使用，
+					//但是定义的数据却两种都可以
+					this.getpage(1);
+				},
+				methods:{
+					getpage:function(page){
+						var url="/user/listAllPermission?start="+page;
+						axios.get(url).then(function(response){
+							vue.pageInfo=response.data;
+							vue.permissions=response.data.list;
+							vue.totalPage=response.data.pages;
+							vue.currentPage=response.data.pageNum;
+						});
+					},
+					jump: function(page){
+						if(page=='first'){
+							this.getpage(1);
+						}else if(page=='pre'&&this.pageInfo.pageNum!=1){
+							this.getpage(this.pageInfo.prePage);
+						}else if(page=='next'&&this.pageInfo.pageNum!=this.pageInfo.pages){
+							this.getpage(this.pageInfo.nextPage);
+						}else if(page=='tail'){
+							this.getpage(this.pageInfo.pages)
+						}
+					}
+				}
+			})
+		</script>
+	</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+		<meta charset="utf-8">
+		<script type="text/javascript" src="../static/js/axios.min.js"></script>
+		<script type="text/javascript" src="../static/js/jquery.min.js"></script>
+		<script type="text/javascript" src="../static/js/vue.min.js"></script>
+		
+		<style type="text/css">
+			table#manage_table{
+				border-collapse: collapse;
+				background-color: #e2e2e2;
+			}
+			.index_tr{
+				color: blue;
+				cursor: pointer;
+				
+			}
+		</style>
+		<title>首页</title>
+	</head>
+	<body>
+		<div id="index_page">
+
+		<div id="manage_item">
+		<table align="center" border="1" id="manage_table" >
+			<tr class="index_tr"><td @click="mangeUser">用户管理</td></tr>
+			<tr class="index_tr"><td @click="manageRole">角色管理</td></tr>
+			<tr class="index_tr"><td @click="managePermission">权限管理</td></tr>
+			<tr class="index_tr"><td @click="manageOrder">订单管理</td></tr>
+			<tr class="index_tr"><td @click="manageProduct">商品管理</td></tr>
+			<tr class="index_tr"><td @click="manageOrderItem">订单项管理</td></tr>
+			
+			<!-- <tr class="index_tr"><td @click="">管理</td></tr> -->
+		</table>
+		</div>
+		<div id="showing_area">
+			
+		</div>
+		</div>
+		<script>
+			var vue= new Vue({
+				el:"#index_page",
+				data:{},
+				mounted:function(){
+					
+				},
+				methods:{
+					mangeUser:function(){
+						//跳转到userManage.html
+						// location.href="localhost:8080/home/manageUser";
+						location.href="/home/manageUser";
+						
+					},
+					manageRole:function(){
+						
+						location.href="/home/manageRole";
+					},
+					managePermission:function(){
+						
+						location.href="/home/managePermission";
+					},
+					manageProduct:function(){
+						
+						location.href="/home/manageProduct";
+					},
+					manageOrder:function(){
+						
+						location.href="/home/manageOrder";
+					},
+					manageOrderItem:function(){
+						location.href="/home/manageItem";
+					}
+				}
+				
+			});
+		</script>
+	</body>
+</html>

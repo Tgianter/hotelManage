@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.myweb.myshiro.dao.OrderMapper" >
+
+    <!-- resultMap只负责将我们的查询结果的各个列映射到对应实体类Order-->
+    <!-- 注意实体类Order要把路径名加上，然后Spring会找不到这个实体类   -->
+    <resultMap id="OrderResultMap" type="com.myweb.myshiro.model.Order">
+        <id property="id" column="oid"/>
+        <result property="uid" column="uid"/>
+
+        <!-- collection 完成实体类Order中的List<Item>的映射-->
+        <!-- 注意实体类Item要把路径名加上，然后Spring会找不到这个实体类   -->
+        <collection property="items" ofType="com.myweb.myshiro.model.Item">
+            <id property="id" column="Iid"/>
+            <result property="pnum" column="pNum"/>
+
+            <!-- association 完成Item项中，product的映射-->
+            <!-- 注意实体类Product要把路径名加上，然后Spring会找不到这个实体类   -->
+            <association property="product" javaType="com.myweb.myshiro.model.Product">
+                <id property="id" column="pid"/>
+                <result property="name" column="pName"/>
+                <result property="price" column="price"/>
+            </association>
+        </collection>
+    </resultMap>
+    <!-- 我们只投影(选择)我们需要的列，然后在resultMap完成和实体类属性的映射-->
+    <select id="getOrderByUid"  resultMap="OrderResultMap">
+        select
+        o.id oid,
+        o.uid uid,
+        i.id Iid,
+        i.pNum "pNum",
+        p.id pid,
+        p.name pName,
+        p.price price
+        from order_ o
+        left join item i on o.id = i.oid
+        left join product p on p.id=i.pid
+        where o.uid=#{uid}
+    </select>
+    <select id="getOrderById"  resultMap="OrderResultMap">
+        select
+        o.id oid,
+        o.uid uid,
+        i.id Iid,
+        i.pNum "pNum",
+        p.id pid,
+        p.name pName,
+        p.price price
+        from order_ o
+        left join item i on o.id = i.oid
+        left join product p on p.id=i.pid
+        where o.id=#{id}
+    </select>
+    <select id="listAllOrder" resultMap="OrderResultMap">
+        select
+        o.id oid,
+        o.uid uid,
+        i.id Iid,
+        i.pNum "pNum",
+        p.id pid,
+        p.name pName,
+        p.price price
+        from order_ o
+        left join item i on i.oid=o.id
+        left join product p on i.pid=p.id
+    </select>
+</mapper>

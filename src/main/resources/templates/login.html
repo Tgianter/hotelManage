@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!-- <html xmlns:th="http://www.thymeleaf.org"> -->
+	<head>
+		<meta charset="utf-8">
+		<script type="text/javascript" src="../static/js/axios.min.js"></script>
+		<script type="text/javascript" src="../static/js/jquery.min.js"></script>
+		<script type="text/javascript" src="../static/js/vue.min.js"></script>
+		<style>
+			
+		</style>
+		<title>登录页面</title>
+	</head>
+	
+	
+	<body>
+		<div   id="loginPage">
+			<table align="center">
+				<tr>
+					<td class="login_td">username:</td>
+					<td class="login_td"><input name="username" type="text"  v-model="username" placeholder="input your name"/></td>
+				</tr>
+				<tr>
+					<td class="login_td">password:</td>
+					<td class="login_td"><input name="password" type="password" v-model="password" placeholder="input your password"/></td>
+					
+				</tr>
+				<tr>
+					<td colspan="2"><button type="button"   @click="refresh">登录</button></td>
+				</tr>
+			</table>
+			<!-- <input type="button" value="登录" align="center" @click="refresh"/> -->
+			
+		</div>
+		
+		<script>
+			var vue=new Vue({
+				el:"#loginPage",
+				data:{
+					username:'',
+					password:''
+				},
+				methods:{
+					refresh:function(){
+						//要将this存起来，因为在axios响应成功的回调函数中this的值会变化
+						//要使用vue中的data就要，先把vue的this保存起来
+						var that=this;
+						// var url="localhost:8080/myshiro/controller/home/doLogin";
+						var url="doLogin?username="+this.username+"&password="+this.password;
+						// axios.post(url,{username:this.username,password:this.password}).then(function(response){
+						axios.post(url).then(function(response){
+							
+							var resData=response.data;
+							console.log(resData);
+							if(resData=='success'){
+								console.log("登录成功");
+								// thymeleaf的html文档都是通过contrller中的路径进行视图跳转的
+								//此处是直接访问 当前的后端接口中的/home/index路径，因为和当前的接口路径都在同一层
+								//，即都在home层中，因此不用加home/，然后跳转到index.html
+								//若是要跳转到其他接口的路径则要把域名localhost：8080加上
+								location.href="/home/index";
+							}else{
+								location.href="/home/login";
+							}
+						})
+					}
+				}
+			});
+		</script>
+	</body>
+</html>
